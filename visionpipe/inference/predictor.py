@@ -5,6 +5,8 @@ import numpy as np
 from PIL import Image
 from omegaconf import DictConfig
 
+import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
+import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
 from visionpipe.models.registry import build_model
 from visionpipe.inference.validator import FramingValidator
 
@@ -12,10 +14,6 @@ from visionpipe.inference.validator import FramingValidator
 class Predictor:
     def __init__(self, cfg: DictConfig, checkpoint_path: str | None = None):
         self.cfg = cfg
-
-        # Import model modules to trigger registration
-        import visionpipe.models.yolo26  # noqa: F401
-        import visionpipe.models.faster_rcnn  # noqa: F401
 
         self.model = build_model(cfg)
         self.validator = FramingValidator(cfg)

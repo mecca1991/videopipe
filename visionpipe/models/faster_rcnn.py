@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torch import Tensor
 from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
@@ -27,8 +28,6 @@ class FasterRCNNDetector(AbstractDetector):
         Args:
             images: numpy array (H, W, C) uint8 or tensor [B, C, H, W] float 0-1.
         """
-        import numpy as np
-
         if isinstance(images, np.ndarray):
             tensor = torch.from_numpy(images).permute(2, 0, 1).float() / 255.0
             image_list = [tensor]

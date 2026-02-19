@@ -2,6 +2,9 @@ import pytest
 import torch
 from omegaconf import OmegaConf
 
+import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
+from visionpipe.models.faster_rcnn import FasterRCNNDetector
+
 
 @pytest.fixture
 def frcnn_cfg():
@@ -13,18 +16,15 @@ def frcnn_cfg():
 
 def test_faster_rcnn_is_registered():
     from visionpipe.models.registry import MODEL_REGISTRY
-    import visionpipe.models.faster_rcnn  # noqa: F401
     assert "faster_rcnn" in MODEL_REGISTRY
 
 
 def test_faster_rcnn_instantiates(frcnn_cfg):
-    from visionpipe.models.faster_rcnn import FasterRCNNDetector
     model = FasterRCNNDetector(frcnn_cfg)
     assert model is not None
 
 
 def test_faster_rcnn_forward_returns_predictions(frcnn_cfg):
-    from visionpipe.models.faster_rcnn import FasterRCNNDetector
     model = FasterRCNNDetector(frcnn_cfg)
     images = torch.rand(2, 3, 480, 640)
     predictions = model.forward(images)
@@ -36,7 +36,6 @@ def test_faster_rcnn_forward_returns_predictions(frcnn_cfg):
 
 
 def test_faster_rcnn_postprocess_filters_by_confidence(frcnn_cfg):
-    from visionpipe.models.faster_rcnn import FasterRCNNDetector
     model = FasterRCNNDetector(frcnn_cfg)
     images = torch.rand(1, 3, 480, 640)
     predictions = model.forward(images)

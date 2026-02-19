@@ -2,6 +2,10 @@ import pytest
 import torch
 from omegaconf import OmegaConf
 
+import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
+from visionpipe.models.registry import MODEL_REGISTRY
+from visionpipe.models.yolo26 import YOLO26Detector
+
 
 @pytest.fixture
 def yolo_cfg():
@@ -12,19 +16,15 @@ def yolo_cfg():
 
 
 def test_yolo26_is_registered():
-    from visionpipe.models.registry import MODEL_REGISTRY
-    import visionpipe.models.yolo26  # noqa: F401
     assert "yolo26" in MODEL_REGISTRY
 
 
 def test_yolo26_instantiates(yolo_cfg):
-    from visionpipe.models.yolo26 import YOLO26Detector
     model = YOLO26Detector(yolo_cfg)
     assert model is not None
 
 
 def test_yolo26_postprocess_returns_list(yolo_cfg):
-    from visionpipe.models.yolo26 import YOLO26Detector
     model = YOLO26Detector(yolo_cfg)
     images = torch.rand(1, 3, 640, 640)
     predictions = model.forward(images)
