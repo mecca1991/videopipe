@@ -73,7 +73,7 @@ class FasterRCNNDetector(AbstractDetector):
             for i in range(len(boxes)):
                 x1, y1, x2, y2 = boxes[i].tolist()
                 cls_id = int(labels[i])
-                cls_name = COCO_CLASSES[cls_id] if cls_id < len(COCO_CLASSES) else str(cls_id)
+                cls_name = COCO_CLASSES[cls_id] if cls_id < len(COCO_CLASSES) else f"class_{cls_id}"
                 image_detections.append(
                     {
                         "class_label": cls_name,

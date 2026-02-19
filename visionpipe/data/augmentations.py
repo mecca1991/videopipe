@@ -20,7 +20,7 @@ def build_transforms(cfg: DictConfig, is_train: bool) -> A.Compose:
     )
 
     image_size = cfg.data.get("image_size") if "data" in cfg else None
-    aug_cfg = cfg.augmentation
+    aug_cfg = cfg.get("augmentation", DictConfig({"enabled": False}))
 
     base_transforms = []
     if image_size:
