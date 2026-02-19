@@ -14,7 +14,13 @@ class YOLO26Detector(AbstractDetector):
         model_variant = "yolo26n.pt"  # nano variant for speed
         self.model = YOLO(model_variant)
 
-    def forward(self, images: Tensor) -> list:
+    def forward(self, images) -> list:
+        """Run YOLO26 inference.
+
+        Args:
+            images: numpy array (H, W, C) or tensor [B, C, H, W].
+                    Ultralytics handles resizing and preprocessing internally.
+        """
         results = self.model(images, verbose=False)
         return results
 

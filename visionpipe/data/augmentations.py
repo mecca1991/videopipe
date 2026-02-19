@@ -3,6 +3,16 @@ from omegaconf import DictConfig
 
 
 def build_transforms(cfg: DictConfig, is_train: bool) -> A.Compose:
+    """
+    Build the augmentation pipeline based on the configuration and training mode.
+    
+    Args:
+        cfg (DictConfig): The configuration object.
+        is_train (bool): Whether the pipeline is for training or not.
+    
+    Returns:
+        A.Compose: The composed augmentation pipeline.
+    """
     bbox_params = A.BboxParams(
         format="pascal_voc",
         label_fields=["labels"],

@@ -21,8 +21,20 @@ class FasterRCNNDetector(AbstractDetector):
         self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
         self.model.eval()
 
-    def forward(self, images: Tensor) -> list[dict]:
-        image_list = [images[i] for i in range(images.shape[0])]
+    def forward(self, images) -> list[dict]:
+        """Run Faster R-CNN inference.
+
+        Args:
+            images: numpy array (H, W, C) uint8 or tensor [B, C, H, W] float 0-1.
+        """
+        import numpy as np
+
+        if isinstance(images, np.ndarray):
+            tensor = torch.from_numpy(images).permute(2, 0, 1).float() / 255.0
+            image_list = [tensor]
+        else:
+            image_list = [images[i] for i in range(images.shape[0])]
+
         with torch.no_grad():
             predictions = self.model(image_list)
         return predictions

@@ -8,7 +8,6 @@ Usage:
 """
 import argparse
 import json
-import sys
 
 from visionpipe.config import load_config
 from visionpipe.inference.predictor import Predictor

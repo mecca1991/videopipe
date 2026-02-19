@@ -2,7 +2,6 @@
 from pathlib import Path
 
 import numpy as np
-import torch
 from PIL import Image
 from omegaconf import DictConfig
 
@@ -30,10 +29,7 @@ class Predictor:
 
         height, width = image.shape[:2]
 
-        image_tensor = torch.from_numpy(image).permute(2, 0, 1).float() / 255.0
-        image_tensor = image_tensor.unsqueeze(0)
-
-        predictions = self.model.forward(image_tensor)
+        predictions = self.model.forward(image)
         detections = self.model.postprocess(
             predictions,
             conf_threshold=self.cfg.inference.confidence_threshold,
