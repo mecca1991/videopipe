@@ -1,5 +1,4 @@
 from omegaconf import DictConfig
-from torch import Tensor
 from ultralytics import YOLO
 
 from visionpipe.models.base import AbstractDetector
@@ -23,7 +22,7 @@ class YOLO26Detector(AbstractDetector):
         results = self.model(images, verbose=False)
         return results
 
-    def compute_loss(self, predictions, targets) -> Tensor:
+    def compute_loss(self, predictions, targets):
         raise NotImplementedError("YOLO26 loss is computed internally by the ultralytics trainer.")
 
     def postprocess(

@@ -1,7 +1,10 @@
 import lightning as L
 import torch
 from omegaconf import DictConfig
-from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2
+
+import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
+import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
+from visionpipe.models.registry import build_model
 
 
 class DetectionModule(L.LightningModule):
@@ -10,17 +13,8 @@ class DetectionModule(L.LightningModule):
         self.cfg = cfg
         self.save_hyperparameters()
 
-        model_name = cfg.model.name
-        if model_name == "faster_rcnn":
-            if cfg.model.pretrained:
-                weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
-            else:
-                weights = None
-            self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
-        else:
-            raise ValueError(
-                f"Lightning training module supports 'faster_rcnn'. For '{model_name}', use the model's native trainer."
-            )
+        self.detector = build_model(cfg)
+        self.model = self.detector.model  # underlying nn.Module for Lightning parameter tracking
 
     def training_step(self, batch, batch_idx):
         images, targets = batch
