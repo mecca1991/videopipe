@@ -27,9 +27,7 @@ class COCODetectionDataset(Dataset):
         self.images = coco["images"]
         self.categories = {cat["id"]: cat["name"] for cat in coco["categories"]}
 
-        self.img_to_anns: dict[int, list[dict]] = {}
-        for img in self.images:
-            self.img_to_anns[img["id"]] = []
+        self.img_to_anns: dict[int, list[dict]] = {img["id"]: [] for img in self.images}
         for ann in coco["annotations"]:
             if ann.get("iscrowd", 0) == 0:
                 self.img_to_anns[ann["image_id"]].append(ann)

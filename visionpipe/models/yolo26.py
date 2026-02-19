@@ -9,7 +9,7 @@ from visionpipe.models.registry import register_model
 class YOLO26Detector(AbstractDetector):
     def __init__(self, cfg: DictConfig):
         self.cfg = cfg
-        model_variant = "yolo26n.pt"  # nano variant for speed
+        model_variant = cfg.model.get("variant", "yolo26n.pt")
         self.model = YOLO(model_variant)
 
     def forward(self, images, conf: float = 0.25, iou: float = 0.45) -> list:

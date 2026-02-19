@@ -29,7 +29,7 @@ class Predictor:
         if not path.is_file():
             raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
 
-        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
 
         if "state_dict" in checkpoint:
             # Lightning checkpoint — strip "model." prefix from keys

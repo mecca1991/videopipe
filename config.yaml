@@ -2,6 +2,7 @@
 
 model:
   name: "yolo26"
+  variant: "yolo26n.pt"  # YOLO size variant: yolo26n/s/m/l/x.pt
   num_classes: 91  # COCO: 80 categories + background. Change for custom datasets.
   pretrained: true
 
