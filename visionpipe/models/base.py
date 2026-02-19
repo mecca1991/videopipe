@@ -8,7 +8,7 @@ class AbstractDetector(ABC):
     """Interface that all detection models must implement."""
 
     @abstractmethod
-    def forward(self, images: Any) -> Any:
+    def forward(self, images: Any, **kwargs: Any) -> Any:
         """Run detection on images. Accepts numpy array (H,W,C) or tensor [B,C,H,W]."""
 
     @abstractmethod

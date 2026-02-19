@@ -1,14 +1,15 @@
 import numpy as np
 import torch
 from omegaconf import DictConfig
-from torch import Tensor
 from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.ops import nms
 
 from visionpipe.models.base import AbstractDetector
 from visionpipe.models.registry import register_model
 
 COCO_CLASSES = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT.meta["categories"]
+_COCO_NUM_CLASSES = 91  # 80 categories + 10 supercategories + 1 background
 
 
 @register_model("faster_rcnn")
@@ -19,15 +20,13 @@ class FasterRCNNDetector(AbstractDetector):
             weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
         else:
             weights = None
-        from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
         self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
-        if cfg.model.num_classes != 91:
+        if cfg.model.num_classes != _COCO_NUM_CLASSES:
             in_features = self.model.roi_heads.box_predictor.cls_score.in_features
             self.model.roi_heads.box_predictor = FastRCNNPredictor(in_features, cfg.model.num_classes)
-        self.model.eval()
 
-    def forward(self, images) -> list[dict]:
+    def forward(self, images, **kwargs) -> list[dict]:
         """Run Faster R-CNN inference.
 
         Args:
@@ -41,11 +40,12 @@ class FasterRCNNDetector(AbstractDetector):
         else:
             raise TypeError(f"Expected numpy array or torch.Tensor, got {type(images)}")
 
+        self.model.eval()
         with torch.no_grad():
             predictions = self.model(image_list)
         return predictions
 
-    def compute_loss(self, predictions: dict, targets: dict) -> Tensor:
+    def compute_loss(self, predictions, targets):
         raise NotImplementedError(
             "Faster R-CNN loss is computed during forward pass in training mode. "
             "See lightning_module.py for the training integration."

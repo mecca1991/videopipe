@@ -19,12 +19,17 @@ def build_transforms(cfg: DictConfig, is_train: bool) -> A.Compose:
         min_visibility=0.3,
     )
 
+    image_size = cfg.get("data", {}).get("image_size", None) if "data" in cfg else None
     aug_cfg = cfg.augmentation
 
-    if not aug_cfg.enabled or not is_train:
-        return A.Compose([], bbox_params=bbox_params)
+    base_transforms = []
+    if image_size:
+        base_transforms.append(A.Resize(height=image_size, width=image_size))
 
-    transforms = [
+    if not aug_cfg.enabled or not is_train:
+        return A.Compose(base_transforms, bbox_params=bbox_params)
+
+    transforms = base_transforms + [
         A.RandomBrightnessContrast(
             brightness_limit=aug_cfg.brightness_limit,
             contrast_limit=aug_cfg.contrast_limit,

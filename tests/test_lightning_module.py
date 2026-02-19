@@ -7,7 +7,7 @@ from omegaconf import OmegaConf
 def training_cfg():
     return OmegaConf.create(
         {
-            "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
+            "model": {"name": "faster_rcnn", "num_classes": 91, "pretrained": True},
             "training": {
                 "max_epochs": 1,
                 "learning_rate": 0.001,

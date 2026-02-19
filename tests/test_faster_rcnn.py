@@ -10,7 +10,7 @@ from visionpipe.models.faster_rcnn import FasterRCNNDetector
 def frcnn_cfg():
     return OmegaConf.create(
         {
-            "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
+            "model": {"name": "faster_rcnn", "num_classes": 91, "pretrained": True},
             "inference": {"confidence_threshold": 0.5, "nms_iou_threshold": 0.45},
         }
     )

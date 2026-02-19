@@ -22,5 +22,12 @@ lightning_logs/
 # OS
 .DS_Store
 
+# Model weights
+*.pt
+
 # Project spec
 pipeline.pdf
+
+# uv
+uv.lock
+.python-version

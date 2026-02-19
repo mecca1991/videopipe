@@ -2,10 +2,11 @@
 
 model:
   name: "yolo26"
-  num_classes: 80
+  num_classes: 91  # COCO: 80 categories + background. Change for custom datasets.
   pretrained: true
 
 data:
+  image_size: 640  # resize all images to this square size for batching
   dataset_root: "./data/coco"
   train_annotation: "annotations/instances_train2017.json"
   val_annotation: "annotations/instances_val2017.json"

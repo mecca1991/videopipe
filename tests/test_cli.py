@@ -1,11 +1,14 @@
 # tests/test_cli.py
 import subprocess
 import sys
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def test_infer_script_runs_with_help():
     result = subprocess.run(
-        [sys.executable, "infer.py", "--help"],
+        [sys.executable, str(PROJECT_ROOT / "infer.py"), "--help"],
         capture_output=True,
         text=True,
     )
@@ -15,7 +18,7 @@ def test_infer_script_runs_with_help():
 
 def test_train_script_runs_with_help():
     result = subprocess.run(
-        [sys.executable, "train.py", "--help"],
+        [sys.executable, str(PROJECT_ROOT / "train.py"), "--help"],
         capture_output=True,
         text=True,
     )

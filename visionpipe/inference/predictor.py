@@ -16,7 +16,30 @@ class Predictor:
         self.cfg = cfg
 
         self.model = build_model(cfg)
+
+        if checkpoint_path:
+            self._load_checkpoint(checkpoint_path)
+
         self.validator = FramingValidator(cfg)
+
+    def _load_checkpoint(self, checkpoint_path: str) -> None:
+        import torch
+
+        path = Path(checkpoint_path)
+        if not path.is_file():
+            raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
+
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+
+        if "state_dict" in checkpoint:
+            # Lightning checkpoint — strip "model." prefix from keys
+            state_dict = {}
+            for k, v in checkpoint["state_dict"].items():
+                key = k.removeprefix("model.")
+                state_dict[key] = v
+            self.model.model.load_state_dict(state_dict)
+        else:
+            self.model.model.load_state_dict(checkpoint)
 
     def predict(self, image) -> dict:
         image_path = None
@@ -25,13 +48,19 @@ class Predictor:
             image_path = str(image)
             image = np.array(Image.open(image).convert("RGB"))
 
+        if not isinstance(image, np.ndarray):
+            raise TypeError(f"Expected numpy array or file path, got {type(image)}")
+
         height, width = image.shape[:2]
 
-        predictions = self.model.forward(image)
+        conf = self.cfg.inference.confidence_threshold
+        iou = self.cfg.inference.nms_iou_threshold
+
+        predictions = self.model.forward(image, conf=conf, iou=iou)
         detections = self.model.postprocess(
             predictions,
-            conf_threshold=self.cfg.inference.confidence_threshold,
-            iou_threshold=self.cfg.inference.nms_iou_threshold,
+            conf_threshold=conf,
+            iou_threshold=iou,
         )
 
         image_detections = detections[0] if detections else []

@@ -17,7 +17,7 @@ def test_load_config_model_defaults():
 
     cfg = load_config()
     assert cfg.model.name == "yolo26"
-    assert cfg.model.num_classes == 80
+    assert cfg.model.num_classes == 91
     assert cfg.model.pretrained is True
 
 

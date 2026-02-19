@@ -43,8 +43,12 @@ class DetectionModule(L.LightningModule):
     def validation_step(self, batch, batch_idx):
         images, targets = batch
         image_list = images if isinstance(images, list) else list(images.unbind(0))
-        self.model.train()  # Faster R-CNN requires train mode to compute val loss
-        loss_dict = self.model(image_list, targets)
+        # Faster R-CNN only returns losses in train mode, but we disable
+        # gradient tracking and restore eval mode to keep batch norm stable.
+        self.model.train()
+        with torch.no_grad():
+            loss_dict = self.model(image_list, targets)
+        self.model.eval()
         total_loss = sum(loss_dict.values())
         self.log("val_loss", total_loss, prog_bar=True)
 
@@ -63,5 +67,7 @@ class DetectionModule(L.LightningModule):
         if cfg.scheduler == "cosine":
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.max_epochs)
             return [optimizer], [scheduler]
-
-        return optimizer
+        elif cfg.scheduler == "none":
+            return optimizer
+        else:
+            raise ValueError(f"Unknown scheduler: {cfg.scheduler}")

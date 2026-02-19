@@ -9,6 +9,8 @@ Usage:
 
 import argparse
 import json
+import sys
+from pathlib import Path
 
 from omegaconf import OmegaConf
 
@@ -32,6 +34,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    if not Path(args.image).is_file():
+        print(f"Error: Image file not found: {args.image}", file=sys.stderr)
+        sys.exit(1)
 
     cfg = load_config(config_path=args.config)
     if args.override:
