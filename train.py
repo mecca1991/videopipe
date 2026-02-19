@@ -10,6 +10,7 @@ Usage:
 import argparse
 
 import lightning as L
+from omegaconf import OmegaConf
 
 from visionpipe.config import load_config
 from visionpipe.data.dataloader import create_dataloaders
@@ -31,19 +32,10 @@ def parse_args():
 def main():
     args = parse_args()
 
-    overrides = {}
-    for item in args.override:
-        key, value = item.split("=", 1)
-        try:
-            value = int(value)
-        except ValueError:
-            try:
-                value = float(value)
-            except ValueError:
-                pass
-        overrides[key] = value
-
-    cfg = load_config(config_path=args.config, overrides=overrides or None)
+    cfg = load_config(config_path=args.config)
+    if args.override:
+        overrides = OmegaConf.from_dotlist(args.override)
+        cfg = OmegaConf.merge(cfg, overrides)
 
     print(f"Training model: {cfg.model.name}")
     print(f"Max epochs: {cfg.training.max_epochs}")

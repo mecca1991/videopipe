@@ -51,8 +51,9 @@ class COCODetectionDataset(Dataset):
         labels = []
         for ann in anns:
             x, y, w, h = ann["bbox"]
-            bboxes.append([x, y, x + w, y + h])
-            labels.append(ann["category_id"])
+            if w > 0 and h > 0:
+                bboxes.append([x, y, x + w, y + h])
+                labels.append(ann["category_id"])
 
         transformed = self.transform(image=image, bboxes=bboxes, labels=labels)
         image = transformed["image"]

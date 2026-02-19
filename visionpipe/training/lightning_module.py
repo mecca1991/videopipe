@@ -21,7 +21,7 @@ class DetectionModule(L.LightningModule):
             raise ValueError(
                 f"'{model_name}' does not support Lightning training. "
                 f"Supported models: {_LIGHTNING_TRAINABLE}. "
-                f"For YOLO26, use the ultralytics CLI trainer instead."
+                "For YOLO26, use the ultralytics CLI trainer instead."
             )
 
         self.detector = build_model(cfg)
