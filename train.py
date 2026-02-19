@@ -7,7 +7,6 @@ Usage:
     python train.py --override model.name=faster_rcnn --override training.max_epochs=10
 """
 import argparse
-import sys
 
 import lightning as L
 
