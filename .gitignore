@@ -21,3 +21,6 @@ lightning_logs/
 
 # OS
 .DS_Store
+
+# Project spec
+pipeline.pdf
