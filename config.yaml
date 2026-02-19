@@ -1,0 +1,39 @@
+# config.yaml — single source of truth for all pipeline parameters
+
+model:
+  name: "yolo26"
+  variant: "yolo26n.pt"  # YOLO size variant: yolo26n/s/m/l/x.pt
+  num_classes: 91  # COCO: 80 categories + background. Change for custom datasets.
+  pretrained: true
+
+data:
+  image_size: 640  # resize all images to this square size for batching
+  dataset_root: "./data/coco"
+  train_annotation: "annotations/instances_train2017.json"
+  val_annotation: "annotations/instances_val2017.json"
+  train_images: "train2017"
+  val_images: "val2017"
+  batch_size: 16
+  num_workers: 4
+
+augmentation:
+  enabled: true
+  brightness_limit: 0.2
+  contrast_limit: 0.2
+  rotation_limit: 15
+  horizontal_flip_prob: 0.5
+
+training:
+  max_epochs: 50
+  learning_rate: 0.001
+  optimizer: "adam"
+  scheduler: "cosine"
+  checkpoint_dir: "./checkpoints"
+
+inference:
+  confidence_threshold: 0.5
+  nms_iou_threshold: 0.45
+  validation:
+    enabled: true
+    center_tolerance: 0.3
+    min_visible_fraction: 0.9

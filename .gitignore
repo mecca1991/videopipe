@@ -1,0 +1,33 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+CLAUDE.md
+# Virtual environments
+.venv
+
+# Data & checkpoints
+/data/
+/checkpoints/
+lightning_logs/
+/docs/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Model weights
+*.pt
+
+# Project spec
+pipeline.pdf
+
+# uv
+uv.lock
+.python-version
