@@ -9,10 +9,12 @@ from visionpipe.models.yolo26 import YOLO26Detector
 
 @pytest.fixture
 def yolo_cfg():
-    return OmegaConf.create({
-        "model": {"name": "yolo26", "num_classes": 80, "pretrained": True},
-        "inference": {"confidence_threshold": 0.5, "nms_iou_threshold": 0.45},
-    })
+    return OmegaConf.create(
+        {
+            "model": {"name": "yolo26", "num_classes": 80, "pretrained": True},
+            "inference": {"confidence_threshold": 0.5, "nms_iou_threshold": 0.45},
+        }
+    )
 
 
 def test_yolo26_is_registered():

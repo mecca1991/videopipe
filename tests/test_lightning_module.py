@@ -5,30 +5,34 @@ from omegaconf import OmegaConf
 
 @pytest.fixture
 def training_cfg():
-    return OmegaConf.create({
-        "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
-        "training": {
-            "max_epochs": 1,
-            "learning_rate": 0.001,
-            "optimizer": "adam",
-            "scheduler": "cosine",
-            "checkpoint_dir": "./checkpoints",
-        },
-        "inference": {
-            "confidence_threshold": 0.5,
-            "nms_iou_threshold": 0.45,
-        },
-    })
+    return OmegaConf.create(
+        {
+            "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
+            "training": {
+                "max_epochs": 1,
+                "learning_rate": 0.001,
+                "optimizer": "adam",
+                "scheduler": "cosine",
+                "checkpoint_dir": "./checkpoints",
+            },
+            "inference": {
+                "confidence_threshold": 0.5,
+                "nms_iou_threshold": 0.45,
+            },
+        }
+    )
 
 
 def test_lightning_module_instantiates(training_cfg):
     from visionpipe.training.lightning_module import DetectionModule
+
     module = DetectionModule(training_cfg)
     assert module is not None
 
 
 def test_lightning_module_configure_optimizers(training_cfg):
     from visionpipe.training.lightning_module import DetectionModule
+
     module = DetectionModule(training_cfg)
     result = module.configure_optimizers()
     assert result is not None
@@ -36,6 +40,7 @@ def test_lightning_module_configure_optimizers(training_cfg):
 
 def test_lightning_module_training_step_returns_loss(training_cfg):
     from visionpipe.training.lightning_module import DetectionModule
+
     module = DetectionModule(training_cfg)
 
     images = torch.rand(2, 3, 300, 300)

@@ -1,7 +1,7 @@
 import json
-import pytest
+
 import numpy as np
-from pathlib import Path
+import pytest
 from PIL import Image
 
 
@@ -18,17 +18,11 @@ def coco_fixture(tmp_path):
         img.save(images_dir / f"{i:012d}.jpg")
 
     annotations = {
-        "images": [
-            {"id": i, "file_name": f"{i:012d}.jpg", "width": 640, "height": 480}
-            for i in range(1, 4)
-        ],
+        "images": [{"id": i, "file_name": f"{i:012d}.jpg", "width": 640, "height": 480} for i in range(1, 4)],
         "annotations": [
-            {"id": 1, "image_id": 1, "category_id": 1,
-             "bbox": [100, 100, 100, 100], "area": 10000, "iscrowd": 0},
-            {"id": 2, "image_id": 1, "category_id": 2,
-             "bbox": [300, 200, 50, 80], "area": 4000, "iscrowd": 0},
-            {"id": 3, "image_id": 2, "category_id": 1,
-             "bbox": [150, 150, 200, 200], "area": 40000, "iscrowd": 0},
+            {"id": 1, "image_id": 1, "category_id": 1, "bbox": [100, 100, 100, 100], "area": 10000, "iscrowd": 0},
+            {"id": 2, "image_id": 1, "category_id": 2, "bbox": [300, 200, 50, 80], "area": 4000, "iscrowd": 0},
+            {"id": 3, "image_id": 2, "category_id": 1, "bbox": [150, 150, 200, 200], "area": 40000, "iscrowd": 0},
         ],
         "categories": [
             {"id": 1, "name": "cat", "supercategory": "animal"},

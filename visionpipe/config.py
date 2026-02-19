@@ -1,6 +1,7 @@
 # visionpipe/config.py
 from pathlib import Path
-from omegaconf import OmegaConf, DictConfig
+
+from omegaconf import DictConfig, OmegaConf
 
 _DEFAULT_CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
 

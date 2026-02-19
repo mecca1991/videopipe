@@ -3,9 +3,9 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from omegaconf import DictConfig
 from PIL import Image
 from torch.utils.data import Dataset
-from omegaconf import DictConfig
 
 from visionpipe.data.augmentations import build_transforms
 

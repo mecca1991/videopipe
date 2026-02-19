@@ -1,6 +1,4 @@
 # tests/test_config.py
-import pytest
-from pathlib import Path
 
 
 def test_load_config_returns_expected_keys():

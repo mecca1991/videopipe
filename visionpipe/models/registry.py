@@ -1,4 +1,5 @@
 from omegaconf import DictConfig
+
 from visionpipe.models.base import AbstractDetector
 
 MODEL_REGISTRY: dict[str, type[AbstractDetector]] = {}
@@ -8,6 +9,7 @@ def register_model(name: str):
     def decorator(cls: type[AbstractDetector]) -> type[AbstractDetector]:
         MODEL_REGISTRY[name] = cls
         return cls
+
     return decorator
 
 

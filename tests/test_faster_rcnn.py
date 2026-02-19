@@ -8,14 +8,17 @@ from visionpipe.models.faster_rcnn import FasterRCNNDetector
 
 @pytest.fixture
 def frcnn_cfg():
-    return OmegaConf.create({
-        "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
-        "inference": {"confidence_threshold": 0.5, "nms_iou_threshold": 0.45},
-    })
+    return OmegaConf.create(
+        {
+            "model": {"name": "faster_rcnn", "num_classes": 80, "pretrained": True},
+            "inference": {"confidence_threshold": 0.5, "nms_iou_threshold": 0.45},
+        }
+    )
 
 
 def test_faster_rcnn_is_registered():
     from visionpipe.models.registry import MODEL_REGISTRY
+
     assert "faster_rcnn" in MODEL_REGISTRY
 
 

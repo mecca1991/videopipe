@@ -1,6 +1,6 @@
 import torch
-from torch.utils.data import DataLoader
 from omegaconf import DictConfig
+from torch.utils.data import DataLoader
 
 from visionpipe.data.dataset import COCODetectionDataset
 

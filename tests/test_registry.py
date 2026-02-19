@@ -1,7 +1,8 @@
 import pytest
 import torch
+
 from visionpipe.models.base import AbstractDetector
-from visionpipe.models.registry import register_model, build_model, MODEL_REGISTRY
+from visionpipe.models.registry import MODEL_REGISTRY, build_model, register_model
 
 
 class _DummyDetector(AbstractDetector):

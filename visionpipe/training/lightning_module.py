@@ -1,7 +1,7 @@
-import torch
 import lightning as L
+import torch
 from omegaconf import DictConfig
-from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2
 
 
 class DetectionModule(L.LightningModule):
@@ -19,8 +19,7 @@ class DetectionModule(L.LightningModule):
             self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
         else:
             raise ValueError(
-                f"Lightning training module supports 'faster_rcnn'. "
-                f"For '{model_name}', use the model's native trainer."
+                f"Lightning training module supports 'faster_rcnn'. For '{model_name}', use the model's native trainer."
             )
 
     def training_step(self, batch, batch_idx):
@@ -52,16 +51,12 @@ class DetectionModule(L.LightningModule):
         if cfg.optimizer == "adam":
             optimizer = torch.optim.Adam(self.parameters(), lr=cfg.learning_rate)
         elif cfg.optimizer == "sgd":
-            optimizer = torch.optim.SGD(
-                self.parameters(), lr=cfg.learning_rate, momentum=0.9
-            )
+            optimizer = torch.optim.SGD(self.parameters(), lr=cfg.learning_rate, momentum=0.9)
         else:
             raise ValueError(f"Unknown optimizer: {cfg.optimizer}")
 
         if cfg.scheduler == "cosine":
-            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-                optimizer, T_max=cfg.max_epochs
-            )
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.max_epochs)
             return [optimizer], [scheduler]
 
         return optimizer

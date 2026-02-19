@@ -6,6 +6,7 @@ Usage:
     python train.py --config custom.yaml         # Use custom config
     python train.py --override model.name=faster_rcnn --override training.max_epochs=10
 """
+
 import argparse
 
 import lightning as L

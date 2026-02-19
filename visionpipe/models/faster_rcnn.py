@@ -1,9 +1,9 @@
 import numpy as np
 import torch
-from torch import Tensor
-from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
-from torchvision.ops import nms
 from omegaconf import DictConfig
+from torch import Tensor
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_V2_Weights, fasterrcnn_resnet50_fpn_v2
+from torchvision.ops import nms
 
 from visionpipe.models.base import AbstractDetector
 from visionpipe.models.registry import register_model
@@ -67,15 +67,17 @@ class FasterRCNNDetector(AbstractDetector):
                 x1, y1, x2, y2 = boxes[i].tolist()
                 cls_id = int(labels[i])
                 cls_name = COCO_CLASSES[cls_id] if cls_id < len(COCO_CLASSES) else str(cls_id)
-                image_detections.append({
-                    "class_label": cls_name,
-                    "confidence": round(float(scores[i]), 4),
-                    "bbox": {
-                        "x": round(x1, 1),
-                        "y": round(y1, 1),
-                        "width": round(x2 - x1, 1),
-                        "height": round(y2 - y1, 1),
-                    },
-                })
+                image_detections.append(
+                    {
+                        "class_label": cls_name,
+                        "confidence": round(float(scores[i]), 4),
+                        "bbox": {
+                            "x": round(x1, 1),
+                            "y": round(y1, 1),
+                            "width": round(x2 - x1, 1),
+                            "height": round(y2 - y1, 1),
+                        },
+                    }
+                )
             all_detections.append(image_detections)
         return all_detections

@@ -2,13 +2,13 @@
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 from omegaconf import DictConfig
+from PIL import Image
 
-import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
 import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
-from visionpipe.models.registry import build_model
+import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
 from visionpipe.inference.validator import FramingValidator
+from visionpipe.models.registry import build_model
 
 
 class Predictor:

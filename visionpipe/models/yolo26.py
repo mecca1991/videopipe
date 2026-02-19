@@ -1,7 +1,6 @@
-import torch
+from omegaconf import DictConfig
 from torch import Tensor
 from ultralytics import YOLO
-from omegaconf import DictConfig
 
 from visionpipe.models.base import AbstractDetector
 from visionpipe.models.registry import register_model
@@ -25,9 +24,7 @@ class YOLO26Detector(AbstractDetector):
         return results
 
     def compute_loss(self, predictions, targets) -> Tensor:
-        raise NotImplementedError(
-            "YOLO26 loss is computed internally by the ultralytics trainer."
-        )
+        raise NotImplementedError("YOLO26 loss is computed internally by the ultralytics trainer.")
 
     def postprocess(
         self,
@@ -47,15 +44,17 @@ class YOLO26Detector(AbstractDetector):
                     x1, y1, x2, y2 = boxes.xyxy[i].tolist()
                     cls_id = int(boxes.cls[i])
                     cls_name = result.names.get(cls_id, str(cls_id))
-                    image_detections.append({
-                        "class_label": cls_name,
-                        "confidence": round(conf, 4),
-                        "bbox": {
-                            "x": round(x1, 1),
-                            "y": round(y1, 1),
-                            "width": round(x2 - x1, 1),
-                            "height": round(y2 - y1, 1),
-                        },
-                    })
+                    image_detections.append(
+                        {
+                            "class_label": cls_name,
+                            "confidence": round(conf, 4),
+                            "bbox": {
+                                "x": round(x1, 1),
+                                "y": round(y1, 1),
+                                "width": round(x2 - x1, 1),
+                                "height": round(y2 - y1, 1),
+                            },
+                        }
+                    )
             all_detections.append(image_detections)
         return all_detections

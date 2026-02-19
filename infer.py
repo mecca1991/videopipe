@@ -6,6 +6,7 @@ Usage:
     python infer.py --image path/to/image.jpg --config custom.yaml
     python infer.py --image path/to/image.jpg --override model.name=faster_rcnn
 """
+
 import argparse
 import json
 

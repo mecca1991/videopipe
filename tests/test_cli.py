@@ -1,7 +1,6 @@
 # tests/test_cli.py
 import subprocess
 import sys
-import pytest
 
 
 def test_infer_script_runs_with_help():
