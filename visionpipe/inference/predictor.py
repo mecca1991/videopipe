@@ -37,9 +37,9 @@ class Predictor:
             for k, v in checkpoint["state_dict"].items():
                 key = k.removeprefix("model.")
                 state_dict[key] = v
-            self.model.model.load_state_dict(state_dict)
+            self.model.load_state_dict(state_dict)
         else:
-            self.model.model.load_state_dict(checkpoint)
+            self.model.load_state_dict(checkpoint)
 
     def predict(self, image) -> dict:
         image_path = None

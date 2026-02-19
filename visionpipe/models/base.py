@@ -15,6 +15,10 @@ class AbstractDetector(ABC):
     def compute_loss(self, predictions: Any, targets: Any) -> Tensor:
         """Calculate training loss from predictions and ground truth."""
 
+    def load_state_dict(self, state_dict: dict) -> None:
+        """Load model weights from a state dict."""
+        self.model.load_state_dict(state_dict)
+
     @abstractmethod
     def postprocess(
         self,
