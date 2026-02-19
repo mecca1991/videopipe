@@ -1,0 +1,70 @@
+import torch
+from torch import Tensor
+from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_ResNet50_FPN_V2_Weights
+from torchvision.ops import nms
+from omegaconf import DictConfig
+
+from visionpipe.models.base import AbstractDetector
+from visionpipe.models.registry import register_model
+
+COCO_CLASSES = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT.meta["categories"]
+
+
+@register_model("faster_rcnn")
+class FasterRCNNDetector(AbstractDetector):
+    def __init__(self, cfg: DictConfig):
+        self.cfg = cfg
+        if cfg.model.pretrained:
+            weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
+        else:
+            weights = None
+        self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
+        self.model.eval()
+
+    def forward(self, images: Tensor) -> list[dict]:
+        image_list = [images[i] for i in range(images.shape[0])]
+        with torch.no_grad():
+            predictions = self.model(image_list)
+        return predictions
+
+    def compute_loss(self, predictions: dict, targets: dict) -> Tensor:
+        raise NotImplementedError(
+            "Faster R-CNN loss is computed during forward pass in training mode. "
+            "See lightning_module.py for the training integration."
+        )
+
+    def postprocess(self, predictions: list[dict], conf_threshold: float, iou_threshold: float) -> list[list[dict]]:
+        all_detections = []
+        for pred in predictions:
+            boxes = pred["boxes"]
+            scores = pred["scores"]
+            labels = pred["labels"]
+
+            keep = scores >= conf_threshold
+            boxes = boxes[keep]
+            scores = scores[keep]
+            labels = labels[keep]
+
+            if len(boxes) > 0:
+                nms_keep = nms(boxes, scores, iou_threshold)
+                boxes = boxes[nms_keep]
+                scores = scores[nms_keep]
+                labels = labels[nms_keep]
+
+            image_detections = []
+            for i in range(len(boxes)):
+                x1, y1, x2, y2 = boxes[i].tolist()
+                cls_id = int(labels[i])
+                cls_name = COCO_CLASSES[cls_id] if cls_id < len(COCO_CLASSES) else str(cls_id)
+                image_detections.append({
+                    "class_label": cls_name,
+                    "confidence": round(float(scores[i]), 4),
+                    "bbox": {
+                        "x": round(x1, 1),
+                        "y": round(y1, 1),
+                        "width": round(x2 - x1, 1),
+                        "height": round(y2 - y1, 1),
+                    },
+                })
+            all_detections.append(image_detections)
+        return all_detections
