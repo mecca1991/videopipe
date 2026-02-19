@@ -6,6 +6,9 @@ import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
 import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
 from visionpipe.models.registry import build_model
 
+# Models that support Lightning training (forward with targets returns losses)
+_LIGHTNING_TRAINABLE = {"faster_rcnn"}
+
 
 class DetectionModule(L.LightningModule):
     def __init__(self, cfg: DictConfig):
@@ -13,13 +16,21 @@ class DetectionModule(L.LightningModule):
         self.cfg = cfg
         self.save_hyperparameters()
 
+        model_name = cfg.model.name
+        if model_name not in _LIGHTNING_TRAINABLE:
+            raise ValueError(
+                f"'{model_name}' does not support Lightning training. "
+                f"Supported models: {_LIGHTNING_TRAINABLE}. "
+                f"For YOLO26, use the ultralytics CLI trainer instead."
+            )
+
         self.detector = build_model(cfg)
         self.model = self.detector.model  # underlying nn.Module for Lightning parameter tracking
 
     def training_step(self, batch, batch_idx):
         images, targets = batch
-        self.model.train()
-        image_list = [images[i] for i in range(images.shape[0])]
+        image_list = list(images.unbind(0))
+        self.model.train()  # Faster R-CNN requires train mode to return losses
         loss_dict = self.model(image_list, targets)
         total_loss = sum(loss_dict.values())
 
@@ -31,8 +42,8 @@ class DetectionModule(L.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         images, targets = batch
-        self.model.train()
-        image_list = [images[i] for i in range(images.shape[0])]
+        image_list = list(images.unbind(0))
+        self.model.train()  # Faster R-CNN requires train mode to compute val loss
         loss_dict = self.model(image_list, targets)
         total_loss = sum(loss_dict.values())
         self.log("val_loss", total_loss, prog_bar=True)

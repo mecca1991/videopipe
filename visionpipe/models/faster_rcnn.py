@@ -31,8 +31,10 @@ class FasterRCNNDetector(AbstractDetector):
         if isinstance(images, np.ndarray):
             tensor = torch.from_numpy(images).permute(2, 0, 1).float() / 255.0
             image_list = [tensor]
+        elif isinstance(images, torch.Tensor):
+            image_list = list(images.unbind(0)) if images.ndim == 4 else [images]
         else:
-            image_list = [images[i] for i in range(images.shape[0])]
+            raise TypeError(f"Expected numpy array or torch.Tensor, got {type(images)}")
 
         with torch.no_grad():
             predictions = self.model(image_list)
