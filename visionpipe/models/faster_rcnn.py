@@ -19,7 +19,12 @@ class FasterRCNNDetector(AbstractDetector):
             weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
         else:
             weights = None
+        from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+
         self.model = fasterrcnn_resnet50_fpn_v2(weights=weights)
+        if cfg.model.num_classes != 91:
+            in_features = self.model.roi_heads.box_predictor.cls_score.in_features
+            self.model.roi_heads.box_predictor = FastRCNNPredictor(in_features, cfg.model.num_classes)
         self.model.eval()
 
     def forward(self, images) -> list[dict]:

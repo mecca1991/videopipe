@@ -29,7 +29,7 @@ class DetectionModule(L.LightningModule):
 
     def training_step(self, batch, batch_idx):
         images, targets = batch
-        image_list = list(images.unbind(0))
+        image_list = images if isinstance(images, list) else list(images.unbind(0))
         self.model.train()  # Faster R-CNN requires train mode to return losses
         loss_dict = self.model(image_list, targets)
         total_loss = sum(loss_dict.values())
@@ -42,7 +42,7 @@ class DetectionModule(L.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         images, targets = batch
-        image_list = list(images.unbind(0))
+        image_list = images if isinstance(images, list) else list(images.unbind(0))
         self.model.train()  # Faster R-CNN requires train mode to compute val loss
         loss_dict = self.model(image_list, targets)
         total_loss = sum(loss_dict.values())

@@ -35,7 +35,7 @@ class FramingValidator:
         visible_area = max(0, visible_x2 - visible_x1) * max(0, visible_y2 - visible_y1)
         total_area = bw * bh
 
-        if total_area == 0:
+        if total_area <= 1e-6:
             return False
 
         if visible_area / total_area < self.min_visible_fraction:
