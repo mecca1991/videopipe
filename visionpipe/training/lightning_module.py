@@ -2,8 +2,6 @@ import lightning as L
 import torch
 from omegaconf import DictConfig
 
-import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
-import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
 from visionpipe.models.registry import build_model
 
 # Models that support Lightning training (forward with targets returns losses)

@@ -4,7 +4,7 @@
 Usage:
     python train.py                              # Train with config.yaml defaults
     python train.py --config custom.yaml         # Use custom config
-    python train.py --override model.name=faster_rcnn --override training.max_epochs=10
+    python train.py --override model.name=faster_rcnn --override training.max_epochs=4
 """
 
 import argparse

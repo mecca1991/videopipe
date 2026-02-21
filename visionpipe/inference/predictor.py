@@ -5,8 +5,6 @@ import numpy as np
 from omegaconf import DictConfig
 from PIL import Image
 
-import visionpipe.models.faster_rcnn  # noqa: F401  # triggers @register_model
-import visionpipe.models.yolo26  # noqa: F401  # triggers @register_model
 from visionpipe.inference.validator import FramingValidator
 from visionpipe.models.registry import build_model
 
